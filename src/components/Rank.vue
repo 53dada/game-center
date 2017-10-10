@@ -1,11 +1,11 @@
 <template>
   <div class="content">
 
-    <img width="100%" src="../assets/rank_bg.jpg" />
+    <!-- <img width="100%" src="../assets/rank_bg.jpg" /> -->
     <div class="list">
 
       <div class="rank-list">
-        <div v-for="(item, index) in items">
+        <div v-for="(item, index) in items" :key="index">
           <label>{{index+1+'.'}}</label>
           <label style="margin-left:10px;flex:1;">{{item.name}}</label>
           <img v-if="index==0" style="margin-right:20px; width:22px;" src="../assets/first.png">
@@ -15,7 +15,7 @@
             <label>{{item.value}}</label>
             <img src="../assets/rank-value.png" />
           </div>
-          
+
         </div>
 
       </div>
@@ -89,6 +89,7 @@ export default {
   flex-direction: column;
   position: absolute;
   top: 200px;
+  padding-bottom:1.8rem;
 }
 
 .list>label {
@@ -169,5 +170,10 @@ export default {
   font-size: 14px;
   color: #ffffff;
   flex: 1;
+}
+.content{
+  background-repeat: none;
+  background-image: url(../assets/rank_bg.jpg);
+  background-size:cover;
 }
 </style>

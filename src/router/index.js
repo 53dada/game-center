@@ -1,19 +1,20 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Main from '@/components/Main'
-import User from '@/components/User'
-import Rank from '@/components/Rank'
-import Agent from '@/components/Agent'
-import Home from '@/components/Home'
-import Token from '@/components/Token'
-import Zhuanpan from '@/components/Zhuanpan'
-import Subordinate from '@/components/Subordinate'
-import GameRecord from '@/components/GameRecord'
+
+const Main = resolve => require(['@/components/Main.vue'], resolve);
+const User = resolve => require(['@/components/User.vue'], resolve);
+const Rank = resolve => require(['@/components/Rank.vue'], resolve);
+const Agent = resolve => require(['@/components/Agent.vue'], resolve);
+const Home = resolve => require(['@/components/Home.vue'], resolve);
+const Token = resolve => require(['@/components/Token.vue'], resolve);
+const Zhuanpan = resolve => require(['@/components/Zhuanpan.vue'], resolve);
+const Subordinate = resolve => require(['@/components/Subordinate.vue'], resolve);
+const GameRecord = resolve => require(['@/components/GameRecord.vue'], resolve);
 
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  // mode: 'history',
   routes: [
     {
       path: '/',

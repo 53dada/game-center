@@ -32,7 +32,7 @@
                         </div>
                         <span class="item-subtitle">{{item.subTitle}}</span>
                     </div>
-                    <button class="play"> 开始 </button>
+                    <button class="play" @click="goGame(item)"> 开始 </button>
                 </div>
             </div>
             <div v-show="tabIndex==1">
@@ -101,7 +101,7 @@ export default {
                 icon: require('../assets/zhuanpan_logo.png'),
                 title: '幸运大转盘',
                 subTitle: '全新玩法等你来玩',
-                link: '',
+                link: 'Zhuanpan',
                 tag: '易中奖'
             }],
             gameList1: [{
@@ -115,7 +115,14 @@ export default {
     methods: {
         onItemIndexChange(index) {
             this.bannerIndex = index
+        },
+        // 跳转游戏
+        goGame(item){
+          this.$router.push({
+            name:item.link
+          })
         }
+
     },
 }
 </script>
@@ -170,6 +177,7 @@ p {
     min-width: 50px;
     border: 0px;
     font-size: 12px;
+    outline: none;
 }
 
 .play1{
@@ -188,10 +196,10 @@ p {
     color: #ffffff;
     padding: 1px;
     margin-left: 3px;
-    
+
 }
 </style>
 
 
-  
+
 

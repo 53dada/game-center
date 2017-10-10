@@ -31,7 +31,9 @@ router.beforeEach((to, from, next) => {
   console.log(window.location.href)
   console.log(to.name)
   let token = window.localStorage.getItem('token')
-  //let token = window.localStorage.getItem('token')
+  if(!token){
+    localStorage.setItem('token','123')
+  }
 
   if (to.name == 'Token') {
     next()

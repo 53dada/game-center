@@ -12,7 +12,7 @@ export default {
 
 <style lang="less">
 @import '~vux/src/styles/reset.less';
-
+@import './assets/css/rem.less';
 html,
 body {
   background-color: #f8f8f8;
