@@ -6,7 +6,7 @@
  * Website: http://jqueryrotate.com
  */
 
-(function($) {
+(function(jQuery) {
     var supportedCSS,supportedCSSOrigin, styles=document.getElementsByTagName("head")[0].style,toCheck="transformProperty WebkitTransform OTransform msTransform MozTransform".split(" ");
     for (var a = 0; a < toCheck.length; a++) if (styles[toCheck[a]] !== undefined) { supportedCSS = toCheck[a]; }
     if (supportedCSS) {
@@ -336,4 +336,4 @@
         })();
       }
 
-})(jQuery);
+})($);

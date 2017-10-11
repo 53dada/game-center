@@ -9,23 +9,22 @@
 <script>
 import { Group, Cell } from 'vux'
 import qr from '../common/qr'
-
+import api from '../common/Request'
 export default {
   components: {
     Group,
     Cell,
   },
-  created(){
-    console.log(qr)
-    //let ele = qr.makeImage('https://github.com/mdn/simple-web-worker/blob/gh-pages/worker.jshttps://github.com/mdn/simple-web-worker/blob/gh-pages/worker.js');
-  },
-  mounted(){
-    qr.draw('https://github.com/mdn/simple-web-worker/blob/gh-pages/worker.js',document.getElementById('qr-canvas'))
-  },
   data(){
     return {
-      qrcode:''
+      qrcode:'asdf'
     }
+  },
+  async created(){
+    let res = await api.getQr();
+    let qrcode = res.data
+    let ele = qr.makeImage(qrcode)
+    this.qrcode = ele.src
   }
 }
 </script>
@@ -45,5 +44,6 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     z-index: 233;
+    border: none;
   }
 </style>

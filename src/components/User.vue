@@ -2,10 +2,10 @@
   <div style="width:100%">
     <div class="user-info">
       <img width="80px" src="../assets/user-avatar.png" />
-      <label>ID:cjkty</label>
+      <label>ID:{{userId}}</label>
     </div>
 
-    <form-preview header-label="资产" header-value="¥600.00" :body-items="list" :footer-buttons="payButtons"></form-preview>
+    <form-preview header-label="资产" :header-value="'¥'+all" :body-items="list" :footer-buttons="payButtons"></form-preview>
 
     <group style="margin-bottom:30px">
       <cell title="资产记录" is-link>
@@ -31,6 +31,7 @@
 
 <<script>
 import { Cell, Group,FormPreview} from 'vux'
+import api from '../common/Request'
 export default {
   components: {
     Group,
@@ -40,12 +41,15 @@ export default {
   },
   data () {
     return {
+      userId:'',
+      balance:0,
+      commission:0,
       list: [{
         label: '余额',
-        value: '¥300.00'
+        value: 0
       }, {
         label: '佣金',
-        value: '¥300.00'
+        value: 0
       }],
       payButtons: [{
          style: 'primary',
@@ -55,6 +59,19 @@ export default {
         text: '提现',
         link: '/home'
       }]
+    }
+  },
+  async created(){
+    let data = await api.getUser();
+    this.userId = data.data.uniqueId
+    this.balance = data.data.balance
+    this.commission= data.data.commission
+    this.list[0].value = '￥'+ this.balance
+    this.list[1].value = '￥'+ this.commission
+  },
+  computed:{
+    all(){
+      return this.commission + this.balance
     }
   }
 }

@@ -7,7 +7,7 @@ if (process.env.NODE_ENV == 'development') {
     baseURL = ''; // 真实环境地址
 }
 
-const ins = axios.create({
+export const ins = axios.create({
   baseURL,
 });
 
@@ -25,7 +25,17 @@ ins.interceptors.request.use(config => {
   return config;
 }, error => Promise.reject(error));
 
-ins.interceptors.response.use(response => response.data, error => {
+ins.interceptors.response.use(response => {
+    if(response.data.code ==0){
+        return response.data
+    }
+    // token异常 跳授权页面
+    if(response.data.code==-99){
+        location.href=""
+        return Promise.reject(response.data);
+    }
+    
+}, error => {
   // if (error.response.status === 401) {
   //     vm.$notify.error('未登录，请先登录');
   //     auth.logout();
@@ -36,73 +46,32 @@ ins.interceptors.response.use(response => response.data, error => {
   return Promise.reject(error);
 });
 
-export default ins;
 
 
-function _request(url, options) {
-    fetch(url, options)
-        .then((response) => response.json())
-        .then((jsonData) => {
-            if (jsonData.code == 0) {
-                console.log(jsonData.data)
-            } else {
-                console.log(jsonData.msg)
-            }
-        })
-        .catch((error) => {
-            console.log(error)
-        });
-}
+// 下注
+export const bet = (value,betType) => ins.post(`api/game/zhuanpan/bet`,{
+    value,
+    betType
+});
 
-export const Request = {
+// 获取用户信息
+export const getUser = ()=> ins.get(`api/user`)
+
+// 获取推广二维码内容
+export const getQr = ()=>ins.get(`api/user/qrCodeContent`)
+
+// 获取用户余额
+export const getBalance = ()=> ins.get(`api/user/balance`)
+
+// record
+export const getRecord = ()=> ins.get(`api/game/zhuanpan/betRecord`)
 
 
-    /**
-     * post方式请求接口
-     * @param {*} url 地址
-     * @param {*} body json对象
-     * @param {*} success 成功回调
-     * @param {*} err  失败回调
-     */
-    post(url, body) {
-        _request(url, {
-            method: 'POST',
-            headers: {
-                'Authorization': window.localStorage.token,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
-    },
-    /**
-     *
-     * get方式请求接口
-     * @param {*} url 地址
-     * @param {*} params 参数
-     * @param {*} success 成功回调
-     * @param {*} err 失败回调
-     */
-    get(url, params) {
-        if (params) {
-
-            let paramsArray = [];
-            //拼接参数
-            Object.keys(params).forEach(key => paramsArray.push(key + '=' + params[key]))
-            if (url.search(/\?/) === -1) {
-                url += '?' + paramsArray.join('&')
-            } else {
-                url += '&' + paramsArray.join('&')
-            }
-        }
-        _request(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': window.localStorage.token
-            }
-        });
-    },
-
+export default {
+    getUser,
+    getQr,
+    getBalance,
+    getRecord,
+    bet
 
 }
-

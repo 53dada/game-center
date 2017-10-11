@@ -4,8 +4,8 @@
         <!-- <div class="zp-user-info"></div> -->
         <div class="zp-header">
           <span class="online">在线10025人</span>
-          <span class="user-money" @click="showMoney=true">&yen;125.00</span>
-          <span class="user-record" @click="showRecord=true"></span>
+          <span class="user-money" @click="showMoney=true">&yen;{{balance}}</span>
+          <span class="user-record" @click="listRecord"></span>
         </div>
         <div class="zp-poll">
           <p>12345</p>
@@ -25,12 +25,21 @@
             </div>
             <div id="zhuanpan" class="zhuanpan">
                 <div class="zp-wrapper" :class="{zhong:changeIndex == 2,da:changeIndex == 3}">
-                  <div class="btn"></div>
+                  <div class="btn" @click="start"></div>
                   <template v-if="changeIndex==1">
-                    <div class="ball">
+                    <div class="ball ball1">
                     </div>
-                    <div class="ball2">
+                    <div class="ball ball2">
                     </div>
+                  </template>
+                  <template v-if="changeIndex==2">
+                    <div class="ball ball3"></div>
+                    <div class="ball ball4"></div>
+                    <div class="ball ball5"></div>
+                    <div class="ball ball6"></div>
+                  </template>
+                  <template v-if="changeIndex==3">
+                    <div class="ball" v-for="d in deg"  :style="{transform:'rotate('+d+'deg)','transform-origin':'-1.2rem .5rem'}" :key="d"></div>
                   </template>
                   
                   <!-- <img id="zhuanpan-bg" class="zhuanpan-img-bg" src="../assets/zhuanpan/zhuanpanbg1.png"> -->
@@ -44,8 +53,8 @@
                   
                   <!-- <img v-on:click="start()" id="zp-start" class="zhuanpan-img-bg" src="../assets/zhuanpan/button.png"> -->
                 </div>
-                <div class="laba"></div>
             </div>
+            <div class="laba"></div>
 
             <div class="value-root">
                 <div v-bind:class="{'zp-value-active':valueIndex == 1 ,'zp-value-normal':valueIndex != 1 }" v-on:click="changeValue(1)">
@@ -84,7 +93,7 @@
         <div v-transfer-dom>
           <popup v-model="showRecord" position="bottom">
             <group>
-              <cell v-for="i in 20" :key="i" :title="i"></cell>
+               <cell-form-preview :list="list" v-for="(list,index) in kvLists" :key="index"></cell-form-preview>
             </group>
             <div style="padding: 15px;">
               <x-button @click.native="showRecord = false" plain type="primary"> 关闭 </x-button>
@@ -96,7 +105,15 @@
 
 
 <script>
-import { XDialog,Group,Popup,Cell,XButton, TransferDomDirective as TransferDom} from 'vux'
+import { XDialog,Group,Popup,Cell,XButton, TransferDomDirective as TransferDom ,CellFormPreview} from 'vux'
+import api from '../common/Request'
+
+let deg = []
+for(let i=0;i<12;i++){
+  deg.push(15+i*30)
+}
+
+
 export default {
     directives: {
       TransferDom
@@ -106,10 +123,14 @@ export default {
       Group,
       Popup,
       Cell,
-      XButton
+      XButton,
+      CellFormPreview
     },
     data() {
         return {
+            deg,
+            balance:0,
+            kvLists:[],
             showMoney:false,
             showRecord:false,
             //大小中盘切换
@@ -126,7 +147,9 @@ export default {
     },
     methods: {
         start() {
-            $('#zp-start').rotate({
+          console.log($,$('.btn'),$('.btn').rotate,typeof $('.btn').rotate);
+          //console.log($('.btn'),$)
+            $('.btn').rotate({
                 angle: 0,
                 animateTo: 5555,
                 duration: 10000,
@@ -141,7 +164,9 @@ export default {
         },
         changgeZhuanpan(type) {
             this.changeIndex = type
-            $("div").remove(".zhuanpan-item")
+            
+            //$("#zhuanpan").remove(".zhuanpan-item")
+            $('.zhuanpan-item').remove();
             var str = ''
             var rootWidth = $('#zhuanpan').width()
             var s = rootWidth / 4 - 12
@@ -185,12 +210,94 @@ export default {
                         </div>`
             }
             $('#zhuanpan').append(str)
+        },
+        async betRecord(){
+          let res = await api.getRecord()
+          let rawList = res.data.list
+          let kvLists = []
+          rawList.forEach((record,i)=>{
+            let cellList = []
+            Object.keys(record).forEach(key=>{
+              console.log(record,key)
+              const result= this.translateList(record,key)
+              if(result.key==-1 && result.value==-1)return
+              cellList.push({
+                label: result.key,
+                value: result.value
+              })
+            })
+            kvLists.push(cellList)
+          });
+          this.kvLists = kvLists
+        },
+        listRecord(){
+          if(this.showRecord) return;
+          this.betRecord()
+          this.showRecord = true
+        },
+        translateList(record,key){
+          if(key=='betType'){
+            let value
+            if(record[key]==0){
+              value = '小盘'
+            }
+            if(record[key]==1){
+              value = '中盘'
+            }
+            if(record[key]==2){
+              value = '大盘'
+            }
+            return {
+              key:'下注类型',
+              value
+            }
+          }
+          if(key=='createTime'){
+            return {
+              key:'下注时间',
+              value:(new Date(record[key])).format("yyyy-MM-dd hh:mm:ss")
+            }
+          }
+          if(key=='currentBalance'){
+            return {
+              key:'下注后的当前余额',
+              value:record[key]
+            }
+          }
+          if(key=='gameType'){
+            return {
+              key:'游戏类型',
+              value: record[key] == 2? '转盘游戏':'其他'
+            }
+          }
+          if(key=="value"){
+            return {
+              key:'下注金额',
+              value: record[key]
+            }
+          }
+          if(key=='amount'){
+            return {
+              key:'中奖金额',
+              value: record[key]
+            }
+          }
+          return {
+            key:-1,
+            value:-1
+          }
+        },
+        async getUserBalance(){
+          let res = await api.getBalance()
+          this.balance = res.data
         }
+    },
+    created(){
+      this.getUserBalance();
     },
     mounted() {
         this.$nextTick(() => {
-
-            this.changgeZhuanpan(1)
+            //this.changgeZhuanpan(1)
         })
     }
 }
@@ -252,13 +359,6 @@ export default {
    height: 100vh;
 }
 
-.zhuanpan {
-
-    margin: 0 auto;
-    position: relative;
-    height: 64%;
-    overflow: hidden;
-}
 
 
 .zhuanpan-img-bg {
@@ -365,10 +465,17 @@ export default {
   }
 }
 .zhuanpan{
+
+  // margin: 0 auto;
+  position: relative;
+  height: 7.6rem;
+  overflow: hidden;
+  box-sizing: border-box;
+  // padding-top: .16rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: url(../assets/zhuanpan/deng.gif) center no-repeat;
+  background: url(../assets/zhuanpan/deng.gif)  center  no-repeat;
   background-size: contain;
   .pan{
       width: 80%;
@@ -404,30 +511,51 @@ export default {
     background: url(../assets/zhuanpan/button.png) no-repeat;
     background-size: contain;
   }
-  .ball,.ball2{
+  .ball{
     position: absolute;
-    width:.7rem;
-    height: .7rem;
-    background: #fff;
-    border-radius: 50%;
-    border:1px solid #333;
-    margin:auto;
-    transform: translate(1.8rem,0px)
+    width:1rem;
+    height: 1rem;
+    background: url(../assets/zhuanpan/yuan.png) no-repeat;
+    background-size: contain;
+    right:0;
+    top: 50%;
+    margin-top: -.5rem;
+    transform: rotate(90deg);
+    transform-origin: -1.2rem .5rem;
+  }
+  .ball1{
+    transform: rotate(0deg);
   }
   .ball2{
-    transform: translate(-1.8rem,0)
+    transform: rotate(180deg);
   }
-  .laba{
-    position: absolute;
-    width: 4.9rem;
+  .ball3{
+    transform: rotate(45deg);
+  }
+  .ball4{
+    transform: rotate(135deg);
+  }
+  .ball5{
+    transform: rotate(225deg);
+  }
+  .ball6{
+    transform: rotate(315deg);
+  }
+}
+.zhuanpan-item{
+  display: none;
+}
+
+.laba{
+    //position: absolute;
+    // width: 4.9rem;
     height:.58rem;
     margin-left:auto;
     margin-right: auto;
     // bottom:.05rem;
     bottom:0;
-    background: url(../assets/zhuanpan/laba.png) no-repeat;
+    background: url(../assets/zhuanpan/laba.png) center no-repeat;
     background-size: contain;
-  }
 }
 
 .dialog-demo {
