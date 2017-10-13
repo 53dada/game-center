@@ -1,4 +1,5 @@
 import axios from 'axios';
+import config from './Domain'
 
 let baseURL;
 if (process.env.NODE_ENV == 'development') {
@@ -14,12 +15,8 @@ export const ins = axios.create({
 ins.interceptors.request.use(config => {
   const token = localStorage.getItem('token');
   if (!token) {
-      const error = new Error();
-      error.message = 'no token';
-      error.response = {
-          status: 401,
-      };
-      throw error;
+    location.href= config.main
+    return Promise.reject(response.data);
   }
   config.headers.common.Authorization = token || '';
   return config;
@@ -31,7 +28,7 @@ ins.interceptors.response.use(response => {
     }
     // token异常 跳授权页面
     if(response.data.code==-99){
-        location.href=""
+        location.href= config.main
         return Promise.reject(response.data);
     }
     
