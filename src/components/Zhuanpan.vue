@@ -483,20 +483,6 @@ export default {
     width: 100%;
 }
 
-.zhuanpan-item {
-    background: url(../assets/zhuanpan/zhuanpanitem.png) center no-repeat;
-    background-size: 100% 100%;
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    color: #fff;
-    font-size: 14px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
 .value-root {
     display: flex;
     flex-direction: row;
@@ -592,7 +578,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: url(../assets/zhuanpan/deng.gif)  center  no-repeat;
+  background: url(../assets/zhuanpan/zp-border-bg.png)  center  no-repeat;
   background-size: contain;
   .pan{
       width: 80%;
