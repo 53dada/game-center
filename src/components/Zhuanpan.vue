@@ -3,12 +3,12 @@
         <!-- 用户信息 -->
         <!-- <div class="zp-user-info"></div> -->
         <div class="zp-header">
-          <span class="online">在线10025人</span>
+          <span class="online">在线{{online}}人</span>
           <span class="user-money" @click="showMoney=true">&yen;{{balance}}</span>
           <span class="user-record" @click="listRecord"></span>
         </div>
         <div class="zp-poll">
-          <p>12345</p>
+          <p>奖金池:{{poolsize}}</p>
         </div>
         <!-- 转盘部分 -->
         <div class="zhuanpan-root">
@@ -28,18 +28,37 @@
                   <div class="btn" @click="start"></div>
                   <template v-if="changeIndex==1">
                     <div class="ball ball1">
+                      <p>{{ (xiao[0].value * values[valueIndex-1]/2).toFixed(1)}}</p>
+                      <p>金币</p>
                     </div>
                     <div class="ball ball2">
+                      <p>{{ (xiao[1].value * values[valueIndex-1]/2).toFixed(1)}}</p>
+                      <p>金币</p>
                     </div>
                   </template>
                   <template v-if="changeIndex==2">
-                    <div class="ball ball3"></div>
-                    <div class="ball ball4"></div>
-                    <div class="ball ball5"></div>
-                    <div class="ball ball6"></div>
+                    <div class="ball ball3">
+                      <p>{{ (zhong[1].value * values[valueIndex-1]/2).toFixed(1)}}</p>
+                      <p>金币</p>
+                    </div>
+                    <div class="ball ball4">
+                      <p>{{ (zhong[2].value * values[valueIndex-1]/2).toFixed(1)}}</p>
+                      <p>金币</p>
+                    </div>
+                    <div class="ball ball5">
+                      <p>{{ (zhong[3].value * values[valueIndex-1]/2).toFixed(1)}}</p>
+                      <p>金币</p>
+                    </div>
+                    <div class="ball ball6">
+                      <p>{{ (zhong[0].value * values[valueIndex-1]/2).toFixed(1)}}</p>
+                      <p>金币</p>
+                    </div>
                   </template>
                   <template v-if="changeIndex==3">
-                    <div class="ball" v-for="d in deg"  :style="{transform:'rotate('+d+'deg)','transform-origin':'-1.2rem .5rem'}" :key="d"></div>
+                    <div class="ball" v-for="(d,index) in deg"  :style="{transform:getXY(d)}" :key="d">
+                      <p>{{ (da[index].value * values[valueIndex-1]/2).toFixed(1)}}</p>
+                      <p>金币</p>
+                    </div>
                   </template>
                   
                   <!-- <img id="zhuanpan-bg" class="zhuanpan-img-bg" src="../assets/zhuanpan/zhuanpanbg1.png"> -->
@@ -54,7 +73,9 @@
                   <!-- <img v-on:click="start()" id="zp-start" class="zhuanpan-img-bg" src="../assets/zhuanpan/button.png"> -->
                 </div>
             </div>
-            <div class="laba"></div>
+            <swiper  auto height="30px" direction="vertical" :interval=2000 class="laba text-scroll" :show-dots="false">
+              <swiper-item v-for="msg in fakeAwards" :key="msg"><p>{{msg}}</p></swiper-item>
+            </swiper>
 
             <div class="value-root">
                 <div v-bind:class="{'zp-value-active':valueIndex == 1 ,'zp-value-normal':valueIndex != 1 }" v-on:click="changeValue(1)">
@@ -80,10 +101,14 @@
             </div>
         </div>
 
+
         <div v-transfer-dom>
           <x-dialog v-model="showMoney" class="dialog-demo">
-            <div class="img-box">
-              <!-- <img src="../assets/demo/dialog/01.jpg" style="max-width:100%"> -->
+            <div class="img-box cz">
+                <h3>选择充值金额</h3>
+                <cell title="充值10元" link="/component/radio"></cell>
+                <cell title="充值20元" link="/component/radio"></cell>
+                <cell title="充值20元" link="/component/radio"></cell>
             </div>
             <div @click="showMoney=false">
               <span class="vux-close"></span>
@@ -100,20 +125,41 @@
             </div>
           </popup>
         </div>
+        <div v-transfer-dom>
+          <x-dialog v-model="showZhongjiang" class="dialog-demo">
+            <div class="img-box zj">
+              <img src="../assets/zhuanpan/zhongjiang.jpg" style="max-width:100%">
+              <p>获得{{jiangjin}}奖金</p>
+            </div>
+            <div @click="showZhongjiang=false">
+              <span class="vux-close"></span>
+            </div>
+          </x-dialog>
+        </div>
     </div>
 </template>
 
 
 <script>
-import { XDialog,Group,Popup,Cell,XButton, TransferDomDirective as TransferDom ,CellFormPreview} from 'vux'
+import { XDialog,Group,Popup,Cell,XButton,Swiper,SwiperItem, TransferDomDirective as TransferDom ,CellFormPreview} from 'vux'
 import api from '../common/Request'
 
 let deg = []
 for(let i=0;i<12;i++){
-  deg.push(15+i*30)
+  deg.push(-75+i*30)
 }
 
-
+function genName(){
+  let str = []
+  let s = '0123456789asdfghjklopiuytrewqzxcvbnm'
+  for(let i=0;i<5;i++){
+    let idx = parseInt(35*Math.random());  
+    str.push(s[idx])
+  }
+  let name = str.join('')
+  str = null
+  return name
+}
 export default {
     directives: {
       TransferDom
@@ -124,10 +170,18 @@ export default {
       Popup,
       Cell,
       XButton,
-      CellFormPreview
+      CellFormPreview,
+      Swiper,
+      SwiperItem
     },
     data() {
         return {
+            online:10025,
+            poolsize:0,
+            jiangjin:0,
+            showZhongjiang:false,
+            fakeAwards:[],
+            lock:false,
             deg,
             balance:0,
             kvLists:[],
@@ -146,26 +200,76 @@ export default {
         }
     },
     methods: {
-        start() {
-          console.log($,$('.btn'),$('.btn').rotate,typeof $('.btn').rotate);
+        genFakeAward(){
+          let name = genName();
+          let ri = parseInt(Math.random()*3)
+          let pan = ['小','中','大'][ri];
+          let amount
+          switch (ri) {
+            case 0:
+              amount = this.xiao[parseInt(Math.random()*2)].value
+              break;
+            case 1:
+              amount = this.zhong[parseInt(Math.random()*4)].value
+              break
+            default:
+              amount = this.da[parseInt(Math.random()*12)].value
+              break;
+          }
+          return `${name}在${pan}盘赢得${amount}金币`
+        },
+        getXY(deg){
+          let x = 1.8*Math.cos(deg/180*3.14),y = 1.8*Math.sin(deg/180*3.14);
+          return `translate(${x}rem,${y}rem) rotate(${90+deg}deg)`
+        },
+        async start() {
           //console.log($('.btn'),$)
+          if(this.lock){
+            return;
+          }
+          let postValue = this.values[this.valueIndex - 1]
+          let betType = this.changeIndex-1;
+          $('.btn').css('transform','rotate(0)')
+          let res = await api.bet(postValue,betType);
+          let index,animateTo=0;
+          if(res.data){
+            index = res.data.index
+            this.jiangjin = res.data.value
+          }
+          if(this.changeIndex==1){
+             animateTo = 90+index*180
+          }
+          if(this.changeIndex==2){
+             animateTo = -45+index*90
+          }
+          if(this.changeIndex==3){
+             //to = deg //[45,135,225,315,]
+             console.log(index)
+             animateTo = 15+index*30
+          }
+          let self = this
+          this.lock = true
             $('.btn').rotate({
                 angle: 0,
-                animateTo: 5555,
-                duration: 10000,
+                animateTo: animateTo+360*10,
+                duration: 8000,
+                center:['50%','1.14rem'],
                 callback: function() {
-                    //alert('网络超时，请检查您的网络设置！');
+                    self.lock = false
+                    self.showZhongjiang = true
                 }
             })
         },
         changeValue(index) {
+          if(this.lock) return;
             this.valueIndex = index
             this.changgeZhuanpan(this.changeIndex)
         },
         changgeZhuanpan(type) {
-            this.changeIndex = type
-            
-            //$("#zhuanpan").remove(".zhuanpan-item")
+          if(this.lock) return;
+          this.changeIndex = type
+            /*
+            $("#zhuanpan").remove(".zhuanpan-item")
             $('.zhuanpan-item').remove();
             var str = ''
             var rootWidth = $('#zhuanpan').width()
@@ -188,7 +292,7 @@ export default {
                 data = this.zhong
             } else if (type == 3) { //大盘 size 12 顺时针
                 var diff = 4
-                s = rootWidth / 12
+                s = rootWidth / 12 +10
                 postionX = [s * 6.15, s * 7.7, s * 8.7, s * 8.7, s * 7.7, s * 6.2
                     , s * 4.3, s * 2.7, s * 1.7, s * 1.7, s * 2.7, s * 4.35]
                 postionY = [s * 1.7, s * 2.6, s * 4.2, s * 6.05, s * 7.6, s * 8.6
@@ -210,6 +314,8 @@ export default {
                         </div>`
             }
             $('#zhuanpan').append(str)
+            */
+
         },
         async betRecord(){
           let res = await api.getRecord()
@@ -290,10 +396,21 @@ export default {
         async getUserBalance(){
           let res = await api.getBalance()
           this.balance = res.data
+        },
+        async getPool(){
+          let res = await api.zhuanpanPool()
+          this.poolsize = res.data
         }
     },
     created(){
       this.getUserBalance();
+      this.getPool()
+      let tmp = []
+      for(let i=0;i<10;i++){
+        tmp.push(this.genFakeAward())
+      }
+      this.fakeAwards = tmp;
+      this.online = this.online + parseInt(10000*Math.random())
     },
     mounted() {
         this.$nextTick(() => {
@@ -513,39 +630,58 @@ export default {
   }
   .ball{
     position: absolute;
-    width:1rem;
-    height: 1rem;
+    width:.8rem;
+    height: .8rem;
     background: url(../assets/zhuanpan/yuan.png) no-repeat;
     background-size: contain;
-    right:0;
+    right:50;
+    margin-right: -.4rem;
     top: 50%;
-    margin-top: -.5rem;
-    transform: rotate(90deg);
-    transform-origin: -1.2rem .5rem;
+    margin-top: -.4rem;
+    box-sizing: border-box;
+    padding-top: .1rem;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    //transform: rotate(90deg);
+    //transform-origin: -1.4rem .4rem;
+    p{
+      font-size:13px;
+      text-align: center;
+      //transform-origin: center;
+      line-height: 1;
+      //flex: 1
+    }
   }
   .ball1{
-    transform: rotate(0deg);
+    transform: rotate(90deg) translateY(-1.8rem);
   }
   .ball2{
-    transform: rotate(180deg);
+    transform: rotate(-90deg) translateY(-1.8rem);
+    // p{
+    //   transform: rotate(90deg);
+    // }
   }
+  
   .ball3{
-    transform: rotate(45deg);
+     transform: translate(1.273rem,-1.273rem) rotate(45deg);
   }
   .ball4{
-    transform: rotate(135deg);
+    transform: translate(1.273rem,1.273rem) rotate(135deg);
   }
   .ball5{
-    transform: rotate(225deg);
+    transform: translate(-1.273rem,1.273rem) rotate(225deg);
   }
   .ball6{
-    transform: rotate(315deg);
+    transform: translate(-1.273rem,-1.273rem) rotate(315deg);
   }
 }
 .zhuanpan-item{
-  display: none;
+  // display: none;
 }
-
+.text-scroll{
+  color:#fff
+}
 .laba{
     //position: absolute;
     // width: 4.9rem;
@@ -574,6 +710,33 @@ export default {
   .vux-close {
     margin-top: 8px;
     margin-bottom: 8px;
+  }
+}
+.vux-swiper-item{
+  //padding-left: 1rem
+  text-align:center;
+  line-height: .58rem;
+}
+.zj{
+  position: relative;
+  p{
+    color: #fff;
+    font-size: 20px;
+    position: absolute;
+    margin:auto;
+    width:100%;
+    text-align: center;
+    z-index: 9000;
+    bottom:30%;
+
+  }
+}
+.cz{
+  h3{
+    height: .88rem;
+    line-height: .88rem;
+    font-weight: normal;
+    text-align: center
   }
 }
 </style>

@@ -319,21 +319,21 @@
       })()
       }
 
-      if (IE)
-      {
-        Wilq32.PhotoEffect.prototype.createVMLNode=(function(){
-          document.createStyleSheet().addRule(".rvml", "behavior:url(#default#VML)");
-          try {
-            !document.namespaces.rvml && document.namespaces.add("rvml", "urn:schemas-microsoft-com:vml");
-            return function (tagName) {
-              return document.createElement('<rvml:' + tagName + ' class="rvml">');
-            };
-          } catch (e) {
-            return function (tagName) {
-              return document.createElement('<' + tagName + ' xmlns="urn:schemas-microsoft.com:vml" class="rvml">');
-            };
-          }
-        })();
-      }
+      // if (IE)
+      // {
+      //   Wilq32.PhotoEffect.prototype.createVMLNode=(function(){
+      //     document.createStyleSheet().addRule(".rvml", "behavior:url(#default#VML)");
+      //     try {
+      //       !document.namespaces.rvml && document.namespaces.add("rvml", "urn:schemas-microsoft-com:vml");
+      //       return function (tagName) {
+      //         return document.createElement('<rvml:' + tagName + ' class="rvml">');
+      //       };
+      //     } catch (e) {
+      //       return function (tagName) {
+      //         return document.createElement('<' + tagName + ' xmlns="urn:schemas-microsoft.com:vml" class="rvml">');
+      //       };
+      //     }
+      //   })();
+      // }
 
 })($);

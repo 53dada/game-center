@@ -1,7 +1,5 @@
 <template>
     <div class="s-content">
-
-        
         <div>
             <load-more tip="下级概览" :show-loading="false" background-color="#fbf9fe"></load-more>
             <x-table :cell-bordered="false" :content-bordered="false" style="background-color:#fff;">
@@ -69,6 +67,7 @@
 
 <script>
 import { XTable, CellFormPreview, Group, Cell, LoadMore } from 'vux'
+import api from '../common/Request'
 export default {
     components: {
         XTable,
@@ -82,42 +81,45 @@ export default {
             agentFees: []
         }
     },
-    mounted() {
-        this.$nextTick(() => {
+    async created() {
+        let res = await api.agentFee()
+        this.agentFees = res.data
 
 
-            fetch('api/game/agentFee', { method: 'GET' })
-                .then((response) => response.json())
-                .then((jsonData) => {
-                    if (jsonData.code == 0) {
-                        // Object.keys(jsonData.data).forEach(key => {
-                        //     if (jsonData.data[key]) {
-                        //         this.agentFeesKeys.push(key)
-                        //     }
-                        // })
-                        this.agentFees = jsonData.data
-                    } else {
-                        console.log(jsonData.msg)
-                    }
-                })
-                .catch((error) => {
-                    console.log(error)
-                });
-
-            fetch('api/user/subordinates?number=5', { method: 'GET' })
-                .then((response) => response.json())
-                .then((jsonData) => {
-                    if (jsonData.code == 0) {
-                        console.log(jsonData.data)
-                        this.numbers = jsonData.data
-                    } else {
-                        console.log(jsonData.msg)
-                    }
-                })
-                .catch((error) => {
-                    console.log(error)
-                });
+        // fetch('api/game/agentFee', { method: 'GET' })
+        //     .then((response) => response.json())
+        //     .then((jsonData) => {
+        //         if (jsonData.code == 0) {
+        //             // Object.keys(jsonData.data).forEach(key => {
+        //             //     if (jsonData.data[key]) {
+        //             //         this.agentFeesKeys.push(key)
+        //             //     }
+        //             // })
+        //             this.agentFees = jsonData.data
+        //         } else {
+        //             console.log(jsonData.msg)
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         console.log(error)
+        //     });
+        let res2 = await api.subordinates({
+            number:5
         })
+        this.numbers = res2.data
+        // fetch('api/user/subordinates?number=5', { method: 'GET' })
+        //     .then((response) => response.json())
+        //     .then((jsonData) => {
+        //         if (jsonData.code == 0) {
+        //             console.log(jsonData.data)
+        //             this.numbers = jsonData.data
+        //         } else {
+        //             console.log(jsonData.msg)
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         console.log(error)
+        //     });
     }
 }
 </script>

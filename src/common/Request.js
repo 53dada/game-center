@@ -66,12 +66,21 @@ export const getBalance = ()=> ins.get(`api/user/balance`)
 // record
 export const getRecord = ()=> ins.get(`api/game/zhuanpan/betRecord`)
 
+// agentFee
+export const agentFee = ()=>ins.get(`api/game/agentFee`)
+
+export const subordinates = (params) => ins.get(`api/user/subordinates`,{
+    params
+})
+// zhuanpan poll
+export const zhuanpanPool = ()=>ins.get(`api/game/zhuanpan/pool`)
 
 export default {
     getUser,
     getQr,
     getBalance,
     getRecord,
-    bet
+    bet,
+    zhuanpanPool
 
 }
