@@ -593,8 +593,8 @@ export default {
   }
   .zp-wrapper{
     position: relative;
-    width:4.4rem;
-    height: 4.4rem;
+    width:4.6rem;
+    height: 4.6rem;
     background: url(../assets/zhuanpan/1xiao.png) no-repeat;
     background-size: cover;
     display: flex;
