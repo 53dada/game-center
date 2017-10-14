@@ -1,7 +1,6 @@
 <template>
     <div class="zp-content">
         <!-- 用户信息 -->
-        <!-- <div class="zp-user-info"></div> -->
         <div class="zp-header">
           <span class="online">在线{{online}}人</span>
           <span class="user-money" @click="showMoney=true">&yen;{{balance}}</span>
@@ -60,17 +59,6 @@
                       <p>金币</p>
                     </div>
                   </template>
-                  
-                  <!-- <img id="zhuanpan-bg" class="zhuanpan-img-bg" src="../assets/zhuanpan/zhuanpanbg1.png"> -->
-                  <!-- <img class="zhuanpan-img-bg" src="../assets/zhuanpan/deng.gif"> -->
-                  
-                  <!-- <img v-if="changeIndex == 1" class="zhuanpan-img-bg pan" src="../assets/zhuanpan/zhuanpanxiaopanbg.png">
-                  <img v-if="changeIndex == 2" class="zhuanpan-img-bg pan" src="../assets/zhuanpan/zhuanpanzhongpanbg.png">
-                  <img v-if="changeIndex == 3" class="zhuanpan-img-bg pan" src="../assets/zhuanpan/zhuanpandapanbg.png"> -->
-                  
-                  <!-- <img class="zhuanpan-img-bg" src="../assets/zhuanpan/zhuanpancenter.png"> -->
-                  
-                  <!-- <img v-on:click="start()" id="zp-start" class="zhuanpan-img-bg" src="../assets/zhuanpan/button.png"> -->
                 </div>
             </div>
             <swiper  auto height="30px" direction="vertical" :interval=2000 class="laba text-scroll" :show-dots="false">
@@ -268,54 +256,6 @@ export default {
         changgeZhuanpan(type) {
           if(this.lock) return;
           this.changeIndex = type
-            /*
-            $("#zhuanpan").remove(".zhuanpan-item")
-            $('.zhuanpan-item').remove();
-            var str = ''
-            var rootWidth = $('#zhuanpan').width()
-            var s = rootWidth / 4 - 12
-            var postionX
-            var postionY
-            var rotates
-
-            var data
-            if (type == 1) { //小盘  size 2 顺时针
-                postionX = [s * 3+32 , s]
-                postionY = [s * 2, s * 2]
-                rotates = [90, 270]
-                data = this.xiao
-            } else if (type == 2) { //中盘  size 4 顺时针
-                var diff = 4
-                postionX = [s, s * 3, s * 3, s]
-                postionY = [s, s, s * 3 - diff, s * 3 - diff]
-                rotates = [-45, 45, 135, 225]
-                data = this.zhong
-            } else if (type == 3) { //大盘 size 12 顺时针
-                var diff = 4
-                s = rootWidth / 12 +10
-                postionX = [s * 6.15, s * 7.7, s * 8.7, s * 8.7, s * 7.7, s * 6.2
-                    , s * 4.3, s * 2.7, s * 1.7, s * 1.7, s * 2.7, s * 4.35]
-                postionY = [s * 1.7, s * 2.6, s * 4.2, s * 6.05, s * 7.6, s * 8.6
-                    , s * 8.6, s * 7.7, s * 6.05, s * 4.2, s * 2.6, s * 1.7]
-                rotates = [7.5, 45, 75, 125, 140, 170
-                    , -170, -140, -125, -75, -45, -7.5]
-                data = this.da
-            }
-
-            for (var i = 0; i < data.length; i++) {
-                var left = postionX[i]
-                var top = postionY[i]
-                let rotate = rotates[i]
-                var value = data[i].value * (this.values[this.valueIndex - 1] / 2)
-                value = value.toFixed(1)
-                str += `<div class='zhuanpan-item' style='top:${top}px;left:${left}px;transform:rotate(${rotate}deg) scale(0.95);-webkit-transform:rotate(${rotate}deg) scale(0.95)'>
-                        <span style =' height:15px'>${value}</span>
-                        <span>金币</span>
-                        </div>`
-            }
-            $('#zhuanpan').append(str)
-            */
-
         },
         async betRecord(){
           let res = await api.getRecord()
@@ -414,7 +354,6 @@ export default {
     },
     mounted() {
         this.$nextTick(() => {
-            //this.changgeZhuanpan(1)
         })
     }
 }
@@ -467,34 +406,8 @@ export default {
 
 }
 
-.zp-user-info {
-    height: 50px;
-    background-color: #3c3636;
-}
-
 .zhuanpan-root {
    height: 100vh;
-}
-
-
-
-.zhuanpan-img-bg {
-    position: absolute;
-    width: 100%;
-}
-
-.zhuanpan-item {
-    background: url(../assets/zhuanpan/zhuanpanitem.png) center no-repeat;
-    background-size: 100% 100%;
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    color: #fff;
-    font-size: 14px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
 }
 
 .value-root {
@@ -592,7 +505,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: url(../assets/zhuanpan/deng.gif)  center  no-repeat;
+  background: url(../assets/zhuanpan/zp-border-bg.png)  center  no-repeat;
   background-size: contain;
   .pan{
       width: 80%;
@@ -607,8 +520,8 @@ export default {
   }
   .zp-wrapper{
     position: relative;
-    width:4.4rem;
-    height: 4.4rem;
+    width:4.7rem;
+    height: 4.7rem;
     background: url(../assets/zhuanpan/1xiao.png) no-repeat;
     background-size: cover;
     display: flex;
@@ -690,7 +603,7 @@ export default {
     margin-right: auto;
     // bottom:.05rem;
     bottom:0;
-    background: url(../assets/zhuanpan/laba.png) center no-repeat;
+    background: url(../assets/zhuanpan/zp-notice-bg.png) center no-repeat;
     background-size: contain;
 }
 
