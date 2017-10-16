@@ -241,7 +241,8 @@ export default {
                 angle: 0,
                 animateTo: animateTo+360*10,
                 duration: 8000,
-                center:['50%','1.14rem'],
+                center:['50%','1.16rem'],
+                //center:['1rem','1.18rem'],  1.96  2.14   0.18+0.98
                 callback: function() {
                     self.lock = false
                     self.showZhongjiang = true
@@ -536,7 +537,7 @@ export default {
   }
 
   .btn{
-    width:2rem;
+    width:1.96rem;
     height: 2.14rem;
     background: url(../assets/zhuanpan/button.png) no-repeat;
     background-size: contain;

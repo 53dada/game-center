@@ -85,4 +85,7 @@ export default {
   -webkit-overflow-scrolling: touch;
   position: absolute;
 }
+.main-tabbar{
+  z-index: 10000;
+}
 </style>
