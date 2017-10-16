@@ -1,13 +1,13 @@
 <template>
     <div>
-        <swiper style="background-image: linear-gradient(-90deg, #FFDE56 0%, #FFDA42 100%);" auto height="25px" direction="vertical" :interval=2000 class="text-scroll" :show-dots="false">
+        <!-- <swiper style="background-image: linear-gradient(-90deg, #FFDE56 0%, #FFDA42 100%);" auto height="25px" direction="vertical" :interval=2000 class="text-scroll" :show-dots="false">
             <swiper-item v-for="(content, index) in notices" :key="index">
                 <div style="display:flex;align-items: center;height: 100%;padding-left: 10px;">
                     <p>{{content.title}}</p>
                 </div>
             </swiper-item>
 
-        </swiper>
+        </swiper> -->
 
         <swiper :show-dots="false" style="width:100%;margin:0 auto;" auto :aspect-ratio="250/750" :list="bannerList" v-model="bannerIndex" @on-index-change="onItemIndexChange"></swiper>
 

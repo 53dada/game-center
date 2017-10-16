@@ -1,6 +1,6 @@
 
 
 const config = {
-    main: 'http://10.0.0.7/api/auth.html'
+    main: 'api/auth.html'
 }
 export default config;

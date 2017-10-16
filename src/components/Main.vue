@@ -54,7 +54,8 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+
 .tab-active {
   color: #FEC710;
 }
@@ -80,7 +81,7 @@ export default {
   box-sizing: border-box;
   height: 100%;
   width: 100%;
-  padding-bottom: 53px;
+  padding-bottom:1rem;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   position: absolute;
