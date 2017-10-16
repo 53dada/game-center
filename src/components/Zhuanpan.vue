@@ -393,8 +393,8 @@ export default {
 
 .change>div>label {
   color: #ffffff;
-  font-size: 14px;
   //    line-height: 2.3rem;
+  font-size: 14px;   
 }
 
 
